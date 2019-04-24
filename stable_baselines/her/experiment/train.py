@@ -22,15 +22,15 @@ def mpi_average(value):
     :param value: (np.ndarray) the array
     :return: (float) the average
     """
-    if len(value) == 0:
-        value = [0.]
     if not isinstance(value, list):
         value = [value]
+    if len(value) == 0:
+        value = [0.]
     return mpi_moments(np.array(value))[0]
 
 
 def train(policy, rollout_worker, evaluator, n_epochs, n_test_rollouts, n_cycles, n_batches, policy_save_interval,
-          save_policies):
+          save_policies=True):
     """
     train the given policy
 
@@ -60,7 +60,7 @@ def train(policy, rollout_worker, evaluator, n_epochs, n_test_rollouts, n_cycles
             episode = rollout_worker.generate_rollouts()
             policy.store_episode(episode)
             for _ in range(n_batches):
-                policy.train_step()
+                policy.train()
             policy.update_target_net()
 
         # test

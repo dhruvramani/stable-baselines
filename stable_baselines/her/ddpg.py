@@ -19,7 +19,7 @@ class DDPG(object):
     def __init__(self, input_dims, buffer_size, hidden, layers, network_class, polyak, batch_size,
                  q_lr, pi_lr, norm_eps, norm_clip, max_u, action_l2, clip_obs, scope, time_horizon,
                  rollout_batch_size, subtract_goals, relative_goals, clip_pos_returns, clip_return,
-                 sample_transitions, gamma, reuse=False):
+                 sample_transitions, gamma,  info, use_mpi, reuse=False):
         """
         Implementation of DDPG that is used in combination with Hindsight Experience Replay (HER).
 

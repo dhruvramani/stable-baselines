@@ -8,7 +8,7 @@ from stable_baselines.her.util import convert_episode_to_batch_major
 
 
 class RolloutWorker:
-    def __init__(self, make_env, policy, dims, logger, time_horizon, rollout_batch_size=1,
+    def __init__(self, make_env, policy, dims, logger, time_horizon, gamma, rollout_batch_size=1,
                  exploit=False, use_target_net=False, compute_q=False, noise_eps=0,
                  random_eps=0, history_len=100, render=False):
         """
@@ -93,7 +93,7 @@ class RolloutWorker:
         achieved_goals[:] = self.initial_ag
 
         # generate episodes
-        obs, achieved_goals, acts, goals, successes = [], [], [], [], []
+        obs, ags, acts, goals, successes = [], [], [], [], []
         info_values = [np.empty((self.time_horizon, self.rollout_batch_size, self.dims['info_' + key]), np.float32)
                        for key in self.info_keys]
         q_values = []
@@ -141,20 +141,20 @@ class RolloutWorker:
                 return self.generate_rollouts()
 
             obs.append(observations.copy())
-            achieved_goals.append(achieved_goals.copy())
+            ags.append(achieved_goals.copy())
             successes.append(success.copy())
             acts.append(action.copy())
             goals.append(self.goals.copy())
             observations[...] = o_new
             achieved_goals[...] = ag_new
         obs.append(observations.copy())
-        achieved_goals.append(achieved_goals.copy())
+        ags.append(achieved_goals.copy())
         self.initial_obs[:] = observations
 
         episode = dict(o=obs,
                        u=acts,
                        g=goals,
-                       ag=achieved_goals)
+                       ag=ags)
         for key, value in zip(self.info_keys, info_values):
             episode['info_{}'.format(key)] = value
 

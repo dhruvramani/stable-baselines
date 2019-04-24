@@ -125,7 +125,8 @@ def configure_her(params):
     env = cached_make_env(params['make_env'])
     env.reset()
 
-    def reward_fun(achieved_goal, goal, info):  # vectorized
+    def reward_fun(ag_2, g, info):  # vectorized
+        achieved_goal, goal = ag_2, g
         return env.compute_reward(achieved_goal=achieved_goal, desired_goal=goal, info=info)
 
     # Prepare configuration for HER.
